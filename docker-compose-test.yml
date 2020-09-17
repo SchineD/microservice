@@ -1,0 +1,7 @@
+version: '2.2'
+
+services:
+  api:
+    env_file:
+      - ./ci_test/api.env
+

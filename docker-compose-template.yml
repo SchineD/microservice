@@ -1,0 +1,40 @@
+version: '2.2'
+
+services:
+  app:
+    build:
+      context: "app"
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    image: "magwien/{{ PORTAL_APPLICATION_NAME }}-app:${DOCKERIMAGETAG:-dev}"
+    depends_on:
+      api:
+        condition: service_started
+    ports:
+      - "8098:80"
+    restart: "unless-stopped"
+    networks:
+      default:
+        aliases:
+          - app.docker
+
+  api:
+    build:
+      context: "api"
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    image: "magwien/{{ PORTAL_APPLICATION_NAME }}-api:${DOCKERIMAGETAG:-dev}"
+    expose:
+      - 8080
+    restart: unless-stopped
+    env_file:
+      - api/api.env
+    networks:
+      default:
+        aliases:
+          - api.docker
+

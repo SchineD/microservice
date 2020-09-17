@@ -1,0 +1,30 @@
+logging.level:
+    org:
+        springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+        hibernate:
+            type: trace
+spring:
+    h2.console.enabled: true
+    data.rest:
+        base-path: /iot
+        #defaultMediaType: application/json
+        #hateoas:
+        #use-hal-as-default-json-media-type: false
+    datasource:
+        initialization-mode: always
+        #url: jdbc:h2:mem:IOT_ADMIN;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+        #url: jdbc:postgresql://localhost:5432/iot_fiware_admin
+        #username: iot_fiware_admin
+        #password: changeme
+    jpa:
+        hibernate:
+            ddl-auto: none
+        properties.hibernate:
+            #dialect: org.hibernate.dialect.PostgreSQL10Dialect
+            format_sql: true
+        generate-ddl: false
+        show-sql: true
+
+portal.application.name: "{{ PORTAL_APPLICATION_NAME }}"
+
+server.use-forward-headers: true
