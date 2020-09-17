@@ -236,12 +236,22 @@ It's the job of `docker-compose-dev.yml`. It defines a third service
 run outside of the docker-compose enclosure, while in development we
 run it inside of it. That's an arbitrary choice. We could as well
 have used a different configuration for `dev-portal`. Anyway, here's
-what we get:
+what we get by starting
+
+```
+docker-compose -f docker-compose.yml -f docker-compose-dev.yml up
+```
 
 ![Running locally with docker-compose](doc/img/dev-docker.png)
 
 * [Angular app](http://localhost:8097/springboot-angular-starter/app/)
 * [API spec](http://localhost:8097/springboot-angular-starter/app/api/swagger-ui/index.html?url=/springboot-angular-starter/app/api/v3/api-docs)
+
+Shut it down again with 
+
+```
+docker-compose -f docker-compose.yml -f docker-compose-dev.yml down --rmi=all
+```
 
 ## Running a local docker-compose app with real portal
 
