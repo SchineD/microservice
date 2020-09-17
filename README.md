@@ -1,4 +1,4 @@
-# Diplomarbeitsbörse, a a Docker Smart CI project with Spring Boot and Angular
+# Starter project for Spring Boot and Angular with Docker Smart CI
 
 This project is a [Spring
 Boot](https://spring.io/projects/spring-boot) backend
@@ -12,8 +12,8 @@ application with [Angular](https://angular.io/) frontend.
   add a README. You should see instructions titled _Let's put some bits in your bucket_.
   Keep it open, but don't do it now
 
-* Check out [this starter](https://bitbucket.org/ma14pace/springboot-react-starter/) 
-  with `git clone https://bitbucket.org/ma14pace/docker-smart-ci-starter.git my-new-app`
+* Check out [this starter](https://bitbucket.org/ma14pace/springboot-angular-starter/) 
+  with `git clone https://bitbucket.org/ma14pace/springboot-angular-starter.git my-new-app`
   under the new name (here: `my-new-app`)
 
 * Change into that new directory
@@ -29,7 +29,7 @@ application with [Angular](https://angular.io/) frontend.
 
 ## Before you start coding
 
-Springboot, the generation of the OpenAPI docs and React are all
+Springboot, the generation of the OpenAPI docs and Angular are all
 problematic when run behind a reverse proxy like Standard Portal.
 In order to fix this, the portal application name has to be 
 coded into some files. 
@@ -50,7 +50,7 @@ This command generates a few files
 
 ORIGINAL FILE                                              | GENERATED FILE                             | CAN EDIT GENERATED
 -----------------------------------------------------------|--------------------------------------------|-------------------
-app/package.json                                           | app/package.json                           | X
+app/src/index.template.html                                | app/src/index.html                         | -
 api/src/main/resources/application_template.yml            | api/src/main/resources/application.yml     | -
 docker-compose-template.yml                                | docker-compose.yml                         | -
 portal/bin/init_portal_application.sh (embedded in script) | portal/default.conf                        | -
@@ -60,8 +60,7 @@ Without the generated files, the application can't be built. So this is a prereq
 
 `./portal/bin/init_portal_application.sh` is also started on the CI server. Therefore:
 
-Never edit one of the generated files (with the exception
-of `app/package.json`). The changes would not be visible
+Never edit one of the generated files. The changes would not be visible
 in production! Always edit the **original file** instead.
 
 ## Before you try this application as-is 
@@ -76,7 +75,7 @@ Following it makes everything else much easier.
 ### What the application does
 
 Let's begin with the basic functions. 
-This is a [React](https://reactjs.org/)
+This is an [Angular](https://angular.io/)
 _Single Page Application_ (aka "the frontend") with a [Spring
 Boot](https://spring.io/projects/spring-boot) backend.
 
@@ -89,43 +88,13 @@ is in `./app` and the backend is in `./api`.
 Further below we'll look deeper into project
 structure and how and where to change what.
 
-The backend has two collections of objects. One of them are cats,
-the other are IoT devices and their definitions. The cats are not
+The backend has a sample collections of cats, not
 backed by a database but instead by a simple list.
 
-For the IoT definitions, JPA and the embedded, memory backed
-database [H2](https://www.h2database.com/) are used. The IoT
-database is bootstrapped at application startup from the files
-`schema.sql` and `data.sql` in `api/src/main/resources`.
-
-The IoT database is implemented using [Spring Data
-REST](https://spring.io/projects/spring-data-rest),
-a technology that attempts to automate
-REST interfaces along the lines of
-[HATEOAS](https://en.wikipedia.org/wiki/HATEOAS).
-That means, that responses to REST calls contain links
-to object manipulations related to the response. For
-instance an object could contain a link to a "next"
-object, or there could be a link for deleting the obejct.
-
-The links from the default HATEOAS interface are probably not the
-interface, that a frontend Javascript single page application
-expects, but they are useful while mapping the database.
-
-The React frontend currently shows off four components and two links, one
-to the automatically generated [OpenAPI](https://www.openapis.org/)
+There is also an automatically generated [OpenAPI](https://www.openapis.org/)
 documentation of the backend, also known as [Swagger
-Docs](https://swagger.io/specification/), and a link to the root of
-the HATEOAS resource.
+Docs](https://swagger.io/specification/).
 
-The first four links in the navigation area of the frontend are
-
-* Home: a simple "Hello World", centered on the page
-* About: that demonstrates that images can be embedded in 
-  the application, where they have to be placed and how their URLs must be structured
-* List: links to a list of cats. The list is requested from the backend
-* Who am I?: makes a call to the backend and receives an object of HTTP headers 
-  and values, just as they have been received by the backend.
   
 ### Prerequisites
 
@@ -140,10 +109,6 @@ The first four links in the navigation area of the frontend are
 
 * a Javascript package manager
   * npm comes with node
-  * yarn (Stable, v1.19.1+) must be installed separately. For technical reasons, the Dockerfile
-    that constructs the frontend image uses yarn instead of npm. It might be a good idea to use 
-    yarn locally as well. Follow the 
-    [instructions for your operating system](https://yarnpkg.com/lang/en/docs/install/)
 
 * an Editor or, even better, an IDE
 
