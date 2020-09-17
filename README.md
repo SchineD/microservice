@@ -44,7 +44,7 @@ We assume the following:
 Now, before doing anything else,
 
 1. Change into the root of the checked out repo
-1. Run `./portal/bin/init_portal_application.sh`
+1. Run `./portal/bin/init_portal_application.sh <app-name>` (e.g. `my-new-app`)
 
 This command generates a few files
 
@@ -140,16 +140,13 @@ Docs](https://swagger.io/specification/).
 
 1. Open a terminal window (Terminal 2)
 
-1. Build the frontend in Terminal 2. Depending on the Javascript package manager,
-   run either first
+1. Build the frontend in Terminal 2. Run first
    
-   1. `(cd app ; yarn install)` or
-   1. `(cd app ; npm install)`
+   1. `(cd app ; ng build)`
    
    and then
    
-   1. `(cd app ; yarn run build)` or
-   1. `(cd app ; npm run build)`
+   1. `(cd app ; ng serve)`
 
 1. In Terminal 2 type `./portal/bin/start_dev_portal.sh`. This starts a docker container with an 
    [NGINX web server](https://www.nginx.com/). This container is named `dev-portal`. 
@@ -160,15 +157,14 @@ Docs](https://swagger.io/specification/).
 ## A first look
 
 In a web browser navigate to [the
-frontend](http://localhost:8096/springboot-react-starter/#/list). You
-should see some cats. Their metadata comes from the backend via HTTP
-GET http://localhost:8096/springboot-react-starter/api/cat/all
+frontend](http://localhost:8096/springboot-angular-starter/app). You
+should see the generic Angular starter app. It does not access the backend yet.
 
-![The frontend](doc/img/app-01-list.png)
+![The frontend](doc/img/app-01-app.png)
 
-Try the navigation links in the frontend. With the special link [API
-docs](http://localhost:8096/springboot-react-starter/api/swagger-ui/index.html?url=/springboot-react-starter/api/v3/api-docs)
-a new tab opens, showing the OpenAPI documentation.
+The [API
+docs](http://localhost:8096/springboot-angular-starter/app/api/swagger-ui/index.html?url=/springboot-angular-starter/api/v3/api-docs)
+shows the OpenAPI documentation for the backend.
 
 ![The API docs](doc/img/app-02-api.png)
 
@@ -176,11 +172,11 @@ a new tab opens, showing the OpenAPI documentation.
 ## What we have done so far
 
 The `dev-portal` is configured to listen on
-port 8096. It serves the frontend from `/app/build`,
+port 8096. It serves the frontend from `/app/dist/app`,
 which is mapped as a directory volume into
-`/usr/share/nginx/html/springboot-react-starter`.
+`/usr/share/nginx/html/springboot-angular-starter`.
 It also acts as a proxy, delegating
-`/springboot-react-starter/api/` to
+`/springboot-angular-starter/app/api/` to
 [http://localhost:8080](http://localhost:8080).
 That's the port, where the backend listens.
 
@@ -244,6 +240,9 @@ what we get:
 
 ![Running locally with docker-compose](doc/img/dev-docker.png)
 
+* [Angular app](http://localhost:8097/springboot-angular-starter/app/)
+* [API spec](http://localhost:8097/springboot-angular-starter/app/api/swagger-ui/index.html?url=/springboot-angular-starter/app/api/v3/api-docs)
+
 ## Running a local docker-compose app with real portal
 
 Another option, here not realized, is to run the compose app with
@@ -282,7 +281,7 @@ The second variant, running in `docker-compose` with plugged-on
 portal fake, is much more tedious, because after source changes we
 have to rebuild the docker images. That takes time.
 
-Still, in the end it has to run docker, and we have to get the
+Still, in the end it has to run in docker, and we have to get the
 Dockerfiles and `docker-compose-template.yml` right. We also don't
 have to use this all the time and for every change. Remember: what
 we have right now already works with the Docker Smart CI process. If

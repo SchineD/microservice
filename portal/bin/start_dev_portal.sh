@@ -67,7 +67,7 @@ docker run --rm --name dev-portal \
   -d \
   -v "$(pwd)/portal/default-dev-server.conf:/etc/nginx/conf.d/default.conf" \
   -v "$(pwd)/portal/headers.conf:/etc/nginx/conf.d/headers.conf" \
-  -v "$(pwd)/app/build:/usr/share/nginx/html/${PORTAL_APPLICATION_NAME}/app" \
+  -v "$(pwd)/app/dist/app:/usr/share/nginx/html/${PORTAL_APPLICATION_NAME}/app" \
   ${PORT_SPEC} \
   nginx:1.17-alpine
 

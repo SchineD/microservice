@@ -25,7 +25,7 @@ public class OpenApiConfig {
 
         return new OpenAPI()
                 .components(new Components())
-                .info(new Info().title("Springboot React Starter API").description(
+                .info(new Info().title("Springboot Angular Starter API").description(
                         "This is a sample service using springdoc-openapi-ui and OpenAPI 3."))
                 .servers(servers);
     }
