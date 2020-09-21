@@ -12,10 +12,10 @@
 	</parent>
 
 	<groupId>at.gv.wien.m01.pace</groupId>
-	<artifactId>springboot-react-starter.api</artifactId>
+	<artifactId>springboot-angular-starter.api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Spring Boot API</name>
-	<description>Starter project for Spring Boot and React with Docker Smart CI</description>
+	<description>Starter project for Spring Boot and Angular with Docker Smart CI</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

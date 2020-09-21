@@ -27,8 +27,8 @@ done
 
 echo -n "### ${BASE}/zone : "
 ZONE=$(curl -s ${BASE}/zone)
-if [[ "${ZONE}" != "CI_TEST" ]] ; then
-  echo "Reported zone should be CI_TEST but is ${ZONE}"
+if [[ "${ZONE}" != "UNDEFINED" ]] ; then
+  echo "Reported zone should be UNDEFINED but is ${ZONE}"
   EXIT_CODE=$(expr ${EXIT_CODE} + 1)
 else
   echo "${ZONE}"

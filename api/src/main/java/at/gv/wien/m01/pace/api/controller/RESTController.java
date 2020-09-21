@@ -25,10 +25,9 @@ public class RESTController {
 
     @Operation(summary = "Zone", description = "DEV, CI_TEST, TEST or PROD, UNDEFINED otherwise", tags = { "meta" })
     @GetMapping(value = "/zone")
-    public String getZone() {
-        String zone = System.getenv("ZONE");
-        if (zone != null && !zone.isEmpty()) {
-            return zone;
+    public String getZone(@RequestHeader Map<String, String> headers) {
+        if (headers.containsKey("x-portal-zone-status")) {
+            return headers.get("x-portal-zone-status");
         }
         return "UNDEFINED";
     }

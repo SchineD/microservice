@@ -193,14 +193,6 @@ Standard Portal headers. They are static (meaning
 they don't change from request to request), but
 they are a viable substitute for offline use.
 
-This is the best we can do. Admittedly it would be fine
-to be able to run the React development server via `npm
-start` or `yarn start`, but the development server
-can't cope with URL prefixes. It's an open bug, there
-is an open pull request, but it has not been merged
-yet. Once the React team fixes that, we will provide
-support for the development server as well. For now,
-you have to make a production build to see changes.
 
 ## Running a local docker-compose app with fake portal
 
@@ -223,7 +215,7 @@ You may notice, that initially we had three compose files:
 The generated `docker-compose.yml` defines two services, `app`
 and `api`. From the compose file it is not obvious, but when we
 look into the referenced Dockerfiles, we see that `app` is an
-NGINX serving the React frontend, and `api` is a Java image running
+NGINX serving the Angular frontend, and `api` is a Java image running
 the Spring Boot JAR.
 
 This is already the configuration that we will run in production.

@@ -31,8 +31,6 @@ services:
     expose:
       - 8080
     restart: unless-stopped
-    env_file:
-      - api/api.env
     networks:
       default:
         aliases:

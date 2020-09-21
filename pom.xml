@@ -6,12 +6,12 @@
 
 
 	<groupId>at.gv.wien.m01.pace</groupId>
-	<artifactId>springboot-react-starter.base</artifactId>
+	<artifactId>springboot-angular-starter.base</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Springboot Starter Root</name>
-	<description>Root for Spring Boot and React with Docker Smart CI </description>
+	<description>Root for Spring Boot and Angular with Docker Smart CI </description>
 
 	<modules>
 		<module>api</module>

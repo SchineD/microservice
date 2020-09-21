@@ -4,17 +4,10 @@ logging.level:
         hibernate:
             type: trace
 spring:
-    h2.console.enabled: true
-    data.rest:
-        base-path: /iot
-        #defaultMediaType: application/json
-        #hateoas:
-        #use-hal-as-default-json-media-type: false
     datasource:
         initialization-mode: always
-        #url: jdbc:h2:mem:IOT_ADMIN;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-        #url: jdbc:postgresql://localhost:5432/iot_fiware_admin
-        #username: iot_fiware_admin
+        #url: jdbc:postgresql://localhost:5432/springboot_react_starter
+        #username: springboot_react_starter_admin
         #password: changeme
     jpa:
         hibernate:

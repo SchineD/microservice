@@ -54,7 +54,7 @@ server {
 
     }
 
-    # proxy api services to React development server
+    # proxy api services to Angular development server
     #
     location /${PORTAL_APPLICATION_NAME}/app/ {
         root   /usr/share/nginx/html;
