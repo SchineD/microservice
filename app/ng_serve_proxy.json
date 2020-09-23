@@ -1,0 +1,10 @@
+{
+  "/springboot-angular-starter/app/api":
+  {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "pathRewrite": {
+      "^/springboot-angular-starter/app/api": ""
+    }
+  }
+}

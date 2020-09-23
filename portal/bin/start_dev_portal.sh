@@ -19,7 +19,7 @@ else
 fi
 
 # find out what the portal application name is -->    does include a portal role             split on / take first part
-PORTAL_APPLICATION_NAME=$(grep portal.application.name "${BACKEND_CONFIG_FILE}" | cut -d: -f2 | cut -d/ -f1 | tr -d ' \n')
+PORTAL_APPLICATION_NAME=$(grep portal.application.name "${BACKEND_CONFIG_FILE}" | tr -d '"' | cut -d: -f2 | cut -d/ -f1 | tr -d ' \n')
 
 # create a config file for dev-portal
 cat > $(pwd)/portal/default-dev-server.conf <<__EOF

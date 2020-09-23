@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --base-href=/springboot-angular-starter/app/ --proxy-config ng_serve_proxy.json",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
