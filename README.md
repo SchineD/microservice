@@ -249,9 +249,12 @@ Docs](https://swagger.io/specification/).
    In our local outside-of-docker development environment it will stand in for 
    StandardPortal, the authenticating reverse proxy, that the application will run behind 
    in production. The dev portal simulates the real portal. It listens on port 8096.
+   
+* With `./portal/bin/stop_dev_portal.sh` the portal simulation can be stopped. Its container 
+  is automatically removed.
 
 
-## A first look
+## What does this all look like?
 
 In a web browser navigate to [the
 frontend](http://localhost:8096/my-new-app/app). You
@@ -259,9 +262,10 @@ should see the generic Angular starter app. It does not access the backend yet.
 
 ![The frontend](doc/img/app-01-app.png)
 
-The [API
+Clicking on the OpenAPI logo in the upper right corner opens the API
+docs in a new tab. The [API
 docs](http://localhost:8096/my-new-app/app/api/swagger-ui/index.html?url=/my-new-app/api/v3/api-docs)
-shows the OpenAPI documentation for the backend.
+show the OpenAPI documentation for the backend.
 
 ![The API docs](doc/img/app-02-api.png)
 
@@ -309,13 +313,15 @@ If you now `GET whoami` in the API docs, the server will show static, faked port
 ```
            
 You'll notice, there is no live reloading, because the portal simulation blocks
-web sockets. In this regard it acts exactly like the the real portal.
+web sockets. In this regard, it acts sadly like the the real portal.
 
 
-## What we have done so far
+## What have we achieved so far?
 
-The `dev-portal` is configured to listen on
-port 8096. It serves the frontend from the Angular development server.
+The `dev-portal` is configured to listen on port 8096. It serves the
+frontend from the Angular development server, listening on port 4200. 
+You can choose both ways, depending upon what's more important
+at the moment, live reload (on 4200) or simulated headers (on 8096).
 
 ![Running locally with dev-portal](doc/img/dev-portal.png)
 
@@ -330,25 +336,36 @@ Standard Portal headers. They are static (meaning
 they don't change from request to request), but
 they are a viable substitute for offline use.
 
+Actually this is a very good configuration during development. It is
+sufficiently close to what you'll experience behind the real portal,
+but it can be used on any laptop, even without internet connection.
+Going directly at 4200, even gives the immediate feedback to UI
+changes, that developers expect today.
 
 ## Running a local docker-compose app with fake portal
 
-The next step is bringing us closer to the "real thing". We are
-going to run everything in a docker-compose app.
+The next step is bringing us closer to the "real thing". It's not as
+convenient, it involves building Docker images, and therefore it is
+not as immediate, but at one point we want to run it in Docker,
+right? It's reassuring to do it from time to time, and to see that it
+still works. We are going to run everything, portal simulation included,
+in a docker-compose app.
 
-You may notice, that initially we had three compose files:
+You may notice, that initially we had two compose files:
 
 * `docker-compose-template.yml` is not used directly, but 
   `./portal/bin/init_portal_application.sh` uses it to create 
   `docker-compose.yml`. This is the main file with the service
   structure, that will be used in production
 
-* `docker-compose-test.yml` is an overlay file that overrides
-   an environment file for testing
-
 * `docker-compose-dev.yml` is the overlay file that we use 
-  on the development host
+  on the development host. It overlays `docker-compose.yml`.
   
+* Additionally we could have `docker-compose-test.yml`, an overlay file
+  that overlays `docker-compose.yml` during testing on the CI server.
+  A reason could be, that we needed a mock service for testing.
+  In the present project, there is no need to do so.
+
 The generated `docker-compose.yml` defines two services, `app`
 and `api`. From the compose file it is not obvious, but when we
 look into the referenced Dockerfiles, we see that `app` is an
@@ -394,8 +411,8 @@ can't do all of them yourself:
 * The application has to be configured in the TEST zone of 
   Standard Portal. In is true nature, the portal is nothing but a 
   reverse proxy. It can relay requests to servers inside our firewall, 
-  but it can also relay them to a host in your domain. We can do that,
-  but changes may take a day.
+  but it can also relay them to a host in an external developer's domain. 
+  We can do that, but changes may take a day.
   
 * Standard Portal doesn't just talk to everyone. Your server needs a 
   server certificate issued by our CA. We do that, but a certificate 
@@ -412,9 +429,10 @@ If we do all that, we end up with something like this:
 ## How shall we develop?
 
 The quickest turn-around times can be achieved with the first
-variant. The backend runs in our IDE, the frontend is directly made
-with `yarn run build`, `dev-portal` serves the frontend and proxies to
-the backend. We would do most development this way.
+variant. The backend runs in our IDE, the frontend is directly run in
+the Angular development server (`ng serve`), `dev-portal` can be 
+run in front of it, proxying requests and enriching them with 
+like-real portal headers. We could do most development this way.
 
 The second variant, running in `docker-compose` with plugged-on
 portal fake, is much more tedious, because after source changes we
@@ -453,8 +471,8 @@ Let's consider variants though:
 * You could run the same `dev-portal` with a modified config and two
   server configurations on different ports
 
-* you could go fancy, load an extension language like Lua into 
-  `dev-portal`, and there you could switch "identities" based on some
+* you could go fancy, load an extension language like Lua or javascript 
+  into `dev-portal`, and there you could switch "identities" based on some
   incoming header value.
 
 There are plenty of options to stay independent and agile, and still 
