@@ -2,7 +2,8 @@
 
 This project is a [Spring
 Boot](https://spring.io/projects/spring-boot) backend
-application with [Angular](https://angular.io/) frontend.
+application with [Angular](https://angular.io/) frontend. The application's
+API is documented as an OpenAPI v3 specification.
 
 ## Creating a new repository from this starter
 
@@ -27,12 +28,64 @@ application with [Angular](https://angular.io/) frontend.
 
 * Push to the new repository: `git push -u origin master`
 
+## URL structure
+
+We run our applications behind our [Standard
+Portal](https://stp-test.wien.gv.at/docker-smart-ci/071_standard_portal.html),
+and that requires applications to run with an application-specific
+URL prefix.
+
+For this type of project, we recommend a prefix named like the
+project (we call that the _portal application name_), followed by a
+_portal application role_ for the app. See the details in [the
+docs](https://stp-test.wien.gv.at/docker-smart-ci/071_standard_portal.html).
+
+As an example, here are the server-absolute paths of the relevant URLs
+for the current project, if we choose `my-new-app` as portal application name:
+
+PATH                                       | PURPOSE
+-------------------------------------------|--------
+/my-new-app/app/                           | serves the SPA's index.html
+/my-new-app/app/api/                       | serves the backend API
+/my-new-app/app/api/swagger-ui/index.html  | serves the API documentation
+
+`my-new-app` is the application name, `app` is a role. There is a
+second role for viewing logs, it is aptly named `logs`. It is only
+available on Docker Smart CI test servers. It's automatically
+available without developer intervention.
+
+As detailed in the docs, the application name selects the target
+server (per portal zone), while the authorization is associated with
+the portal role (i.e. the second part of the path, here `app`). 
+
+In this type of project, we prefer to let the webserver serving the
+app, also serve the API. As a consequence, if a user is
+authenticated and authorized for the role `app`, the user is
+automatically authorized for the API as well.
+
+A single page application (SPA) is served as a bundle of static
+files (HTML index page, Javascript, CSS and static assets like
+images). While loading the `index.html`, an unauthenticated user
+will be redirected to the portal login page. After login, the user
+is redirected back the the index page. Once the Javascript begins
+accessing the API, the calls are made in the context of the already
+authenticated browser.
+
+You can't access the API without being authorized to access the app.
+This is perfectly fine, because the API is an integral part of the
+app.
+
+If there are additional API functions, that should not be available
+to the app and their users, the additional API will have to be
+exposed as a separate service with a separate role (for instance
+`admin-api`) and separate authorization.
+
 ## Before you start coding
 
 Springboot, the generation of the OpenAPI docs and Angular are all
-problematic when run behind a reverse proxy like Standard Portal.
-In order to fix this, the portal application name has to be 
-coded into some files. 
+problematic when run behind a reverse proxy like Standard Portal. In
+order to attack these problems, the portal application name has to
+be coded into some files.
 
 We assume the following:
 
@@ -44,13 +97,34 @@ We assume the following:
 Now, before doing anything else,
 
 1. Change into the root of the checked out repo
-1. Run `./portal/bin/init_portal_application.sh <app-name>` (e.g. `my-new-app`)
+1. Run `./portal/bin/init_portal_application.sh [<app-name>]` (e.g. `my-new-app`)
+
+The application name is optional, it defaults to the the name of
+the project directory. The output will be something like this:
+
+```
+❯ ./portal/bin/init_portal_application.sh
+
+Derived portal application name 'my-new-app' from project directory
+
+Templating files:
+* set base URL for Angular app (app/src/index.html)
+* set backend proxy for Angular development server (app/backend-proxy.conf.json)
+* patch 'ng serve --base-href=' for live serving (app/package.json)
+* create backend's application.yml (api/src/main/resources/application.yml)
+* create docker-compose.yml
+* create a config file for portal simulation in docker-compose-dev.yml (portal/default.conf)
+* create header include file for the portal simulations (portal/headers.conf)
+❯
+```
 
 This command generates a few files
 
 ORIGINAL FILE                                              | GENERATED FILE                             | CAN EDIT GENERATED
 -----------------------------------------------------------|--------------------------------------------|-------------------
 app/src/index.template.html                                | app/src/index.html                         | -
+app/backend-proxy.conf-template.json                       | app/backend-proxy.conf.json                | -
+app/package.json                                           | app/package.json                           | X
 api/src/main/resources/application_template.yml            | api/src/main/resources/application.yml     | -
 docker-compose-template.yml                                | docker-compose.yml                         | -
 portal/bin/init_portal_application.sh (embedded in script) | portal/default.conf                        | -
@@ -60,10 +134,10 @@ Without the generated files, the application can't be built. So this is a prereq
 
 `./portal/bin/init_portal_application.sh` is also started on the CI server. Therefore:
 
-Never edit one of the generated files. The changes would not be visible
+Never edit one of the generated files (apart from `package.json`). The changes would not be visible
 in production! Always edit the **original file** instead.
 
-## Before you try this application as-is 
+## Before you modify the application 
 
 This application does a few things, and it is very
 useful to understand what they are and how they are
@@ -98,87 +172,150 @@ Docs](https://swagger.io/specification/).
   
 ### Prerequisites
 
-* A current Docker CE (18.09+). A current Docker for Desktop on Mac is fine. Docker for Desktop
-  on Windows 10 might work, but has not been tested. On Windows, a CentOS 7 VM is a safe bet.
+* A current Docker CE (19.03+). A current [Docker for Desktop](https://www.docker.com/products/docker-desktop) 
+  on Mac or Windows 10 is fine. On Windows 10, Docker should preferrably be coupled with WSL2.
 
-* Java 8+ (but why not 11+?)
+* Java 8+ (this repo uses 14)
 
 * Maven 3 
 
-* node.js (12+)
+* node.js 12+, (this repo uses 14)
 
-* a Javascript package manager
-  * npm comes with node
+* a Javascript package manager. npm comes with node, yarn is OK as well (this repo uses npm)
 
-* an Editor or, even better, an IDE
+* an Editor or, even better, an IDE. On Windows 10 with WSL2, Visual Studio Code is currently 
+  (September 2020) the only option for running the editor on Windows and editing in the Linux VM.
 
 ## Initial steps
 
-1. If you haven't run `./portal/bin/init_portal_application.sh` yet, now would be a good time
+* If you haven't run `./portal/bin/init_portal_application.sh` yet, now would be a good time
 
-1. Open the project with an IDE 
+* Open the project with an IDE 
    * In IntelliJ IDEA, "open" the project directory. IntelliJ IDEA will prompt you to
      allow importing the Maven project
-   * Instructions for other IDEs will follow
+   * Other IDEs are similar. Make sure to have appropriate plugins installed, up-to-date and activated.
    * An IDE is not strictly necessary, so you're perfectly welcome to use just `vi` or `emacs`
 
-1. Open a terminal window (Terminal 1)
+* Open a terminal window (Terminal 1)
 
-1. Run the backend in Terminal 1. 
-   1. Spring Boot compiles a Java micro-service down to a single JAR
+* Run the backend in Terminal 1. 
+   * Spring Boot compiles a Java micro-service down to a single JAR
       with everything embedded, Tomcat server included. In IntelliJ IDEA (and likely in
       other typical IDEs as well) just "run" 
       `api/src/main/java/at/gv/wien/m01/pace/api/BackendApplication.java`. 
       This is normally an action from the context menu. The IDE will compile the project 
       and run the JAR file containing the class.
 
-   1. The other option is to compile and run from the commandline
+   * The other option is to compile and run from the commandline
       * `mvn package` will compile the Java sources and build a JAR file
       * `java -jar api/target/app.jar` will run the JAR in the foreground. Logs
         will go to STDOUT, right as Docker apps should do. Hold on, it's not a Docker
         app yet, but we'll get there soon
 
-1. Open a terminal window (Terminal 2)
+* Open a terminal window (Terminal 2)
 
-1. Build the frontend in Terminal 2. Run first
+* Run the frontend in Terminal 2
    
-   1. `(cd app ; ng build)`
-   
-   and then
-   
-   1. `(cd app ; ng serve)`
+```
+❯ cd app
+❯ npm install
+❯ npm start
+```
 
-1. In Terminal 2 type `./portal/bin/start_dev_portal.sh`. This starts a docker container with an 
+* At this point you can already open the app, served from the Angular
+   development server using
+   [http://localhost:4200/my-new-app/app/](http://localhost:4200/my-new-app/app/).
+   Also open the OpenAPI docs 
+   [http://localhost:4200/my-new-app/app/api/swagger-ui/index.html?url=/my-new-app/app/api/v3/api-docs](http://localhost:4200/my-new-app/app/api/swagger-ui/index.html?url=/my-new-app/app/api/v3/api-docs)
+
+* Try `GET whoami` in the API docs. The server should respond with the HTTP headers received from the client. When running
+  behind Standard Portal, you'd get information about the authenticated user, but there's no portal yet, 
+  and the response will look more like
+  
+```
+{
+  "connection": "close",
+  "referer": "http://localhost:4200/my-new-app/app/api/swagger-ui/index.html?url=/my-new-app/app/api/v3/api-docs",
+  "accept-encoding": "gzip, deflate",
+  "accept-language": "en-US,en;q=0.8,de-DE;q=0.5,de;q=0.3",
+  "accept": "*/*",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
+  "host": "localhost:4200"
+}
+```
+
+* In a new Terminal 3 type `./portal/bin/start_dev_portal.sh`. This starts a docker container with an 
    [NGINX web server](https://www.nginx.com/). This container is named `dev-portal`. 
    In our local outside-of-docker development environment it will stand in for 
    StandardPortal, the authenticating reverse proxy, that the application will run behind 
-   in production. 
+   in production. The dev portal simulates the real portal. It listens on port 8096.
+
 
 ## A first look
 
 In a web browser navigate to [the
-frontend](http://localhost:8096/springboot-angular-starter/app). You
+frontend](http://localhost:8096/my-new-app/app). You
 should see the generic Angular starter app. It does not access the backend yet.
 
 ![The frontend](doc/img/app-01-app.png)
 
 The [API
-docs](http://localhost:8096/springboot-angular-starter/app/api/swagger-ui/index.html?url=/springboot-angular-starter/api/v3/api-docs)
+docs](http://localhost:8096/my-new-app/app/api/swagger-ui/index.html?url=/my-new-app/api/v3/api-docs)
 shows the OpenAPI documentation for the backend.
 
 ![The API docs](doc/img/app-02-api.png)
+
+If you now `GET whoami` in the API docs, the server will show static, faked portal headers:
+             
+```
+{
+  "cookie": "wp-settings-time-1=1598183470; DOKU_PREFS=list%23thumbs%23link%233%23align%233%23size%232; redirect_to=%2F; wordpress_test_cookie=WP%20Cookie%20check; DokuWiki=fu818jsou0rusdg7tm9m4sv5c7",
+  "referer": "http://localhost:8096/my-new-app/app/api/swagger-ui/index.html?url=/my-new-app/app/api/v3/api-docs",
+  "accept-encoding": "gzip, deflate",
+  "accept-language": "en-US,en;q=0.8,de-DE;q=0.5,de;q=0.3",
+  "accept": "*/*",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
+  "connection": "close",
+  "host": "localhost",
+  "x-txid": "100527hqnb@lxstportal70:8009",
+  "x-pvp-version": "2.1",
+  "x-pvp-userid": "wien1.jsa0001@wien.gv.at",
+  "x-pvp-txid": "100527hqnb@lxstportal70:8009",
+  "x-pvp-tel": "+43 1 4000 99999",
+  "x-pvp-secclass": "2",
+  "x-pvp-roles": "access()",
+  "x-pvp-principal-name": "Sample",
+  "x-pvp-participant-id": "AT:VKZ:L9",
+  "x-pvp-ou-okz": "L9-M01",
+  "x-pvp-ou-gv-ou-id": "AT:VKZ:L9-M01",
+  "x-pvp-ou": "MA 01",
+  "x-pvp-orig-uri": "/my-new-app/api/whomai",
+  "x-pvp-orig-scheme": "http",
+  "x-pvp-orig-host": "localhost",
+  "x-pvp-mail": "joe.sample@wien.gv.at",
+  "x-pvp-given-name": "Joe",
+  "x-pvp-gid": "AT:L9:1:magwien.gv.at/jsa0001",
+  "x-pvp-bpk": "PV:kjlhdfskjlsdfhfgzgzueukjj4o=",
+  "x-portal-zone-status": "Dev",
+  "x-portal-zone": "EXTERN",
+  "x-portal-user": "jsa0001",
+  "x-portal-uid": "1:magwien.gv.at/jsa0001",
+  "x-portal-security-level": "4",
+  "x-portal-role": "_no_role",
+  "x-portal-domain": "wien1",
+  "x-portal-auth": "Standardportal",
+  "x-portal-application": "my-new-app"
+}
+```
+           
+You'll notice, there is no live reloading, because the portal simulation blocks
+web sockets. In this regard it acts exactly like the the real portal.
 
 
 ## What we have done so far
 
 The `dev-portal` is configured to listen on
-port 8096. It serves the frontend from `/app/dist/app`,
-which is mapped as a directory volume into
-`/usr/share/nginx/html/springboot-angular-starter`.
-It also acts as a proxy, delegating
-`/springboot-angular-starter/app/api/` to
-[http://localhost:8080](http://localhost:8080).
-That's the port, where the backend listens.
+port 8096. It serves the frontend from the Angular development server.
 
 ![Running locally with dev-portal](doc/img/dev-portal.png)
 
@@ -188,7 +325,7 @@ The configuration of `dev-portal` is in
 `./portal/bin/init_portal_application.sh`, in order to use the
 project directory's name as URL prefix.
 
-`header.conf` contains the definitions of faked
+`portal/headers.conf` contains the definitions of faked
 Standard Portal headers. They are static (meaning
 they don't change from request to request), but
 they are a viable substitute for offline use.
@@ -236,8 +373,8 @@ docker-compose -f docker-compose.yml -f docker-compose-dev.yml up
 
 ![Running locally with docker-compose](doc/img/dev-docker.png)
 
-* [Angular app](http://localhost:8097/springboot-angular-starter/app/)
-* [API spec](http://localhost:8097/springboot-angular-starter/app/api/swagger-ui/index.html?url=/springboot-angular-starter/app/api/v3/api-docs)
+* App at [http://localhost:8097/my-new-app/app/](http://localhost:8097/my-new-app/app/)
+* API spec at [http://localhost:8097/my-new-app/app/api/swagger-ui/index.html?url=/my-new-app/app/api/v3/api-docs](http://localhost:8097/my-new-app/app/api/swagger-ui/index.html?url=/my-new-app/app/api/v3/api-docs)
 
 Shut it down again with 
 

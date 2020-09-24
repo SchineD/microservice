@@ -1,4 +1,4 @@
-FROM maven:3-jdk-11 as builder
+FROM maven:3-openjdk-14 as builder
 
 WORKDIR /project/
 COPY . .
@@ -10,7 +10,7 @@ RUN ./maven_dot_m2/make_settings.sh && \
 RUN mvn -q clean package
 
 
-FROM openjdk:11-slim
+FROM openjdk:14-slim
 
 RUN apt-get -y update && apt-get -y upgrade
 RUN mkdir /app && mkdir /app/config
