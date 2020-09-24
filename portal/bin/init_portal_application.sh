@@ -4,24 +4,38 @@ cd "$(dirname "$(dirname "$(dirname "$0")")")"
 
 if [[ -z "$1" ]] ; then
   PORTAL_APPLICATION_NAME="$(basename "$(pwd)")"
+  echo -e "\nDerived portal application name '${PORTAL_APPLICATION_NAME}' from project directory"
 else
   PORTAL_APPLICATION_NAME="$(echo -n "$1" | tr -d /)"
+  echo -e "\nUsing portal application name '${PORTAL_APPLICATION_NAME}' from commandline"
 fi
 
-
-# set base URL for Angular app
+echo -e "\nTemplating files:"
+echo "* set base URL for Angular app (app/src/index.html)"
 cat app/src/index.template.html | \
   sed -e 's/{{ PORTAL_APPLICATION_NAME }}/'${PORTAL_APPLICATION_NAME}'\/app\//' > app/src/index.html
 
-# create backend's application.yml
+echo "* set backend proxy for Angular development server (app/backend-proxy.conf.json)"
+cat app/backend-proxy.conf-template.json | \
+  sed -e 's/{{ PORTAL_APPLICATION_NAME }}/'${PORTAL_APPLICATION_NAME}'\/app/' > app/backend-proxy.conf.json
+
+echo "* patch 'ng serve --base-href=' for live serving (app/package.json)"
+if [[ "$(uname)" == 'Darwin' ]] ; then
+  sed -i '' -e 's/ng serve --base-href=[^ ][^ ]*/ng serve --base-href=\/'${PORTAL_APPLICATION_NAME}'\/app\//' app/package.json
+else
+  sed -i -e 's/ng serve --base-href=[^ ][^ ]*/ng serve --base-href=\/'${PORTAL_APPLICATION_NAME}'\/app\//' app/package.json
+fi
+
+
+echo "* create backend's application.yml (api/src/main/resources/application.yml)"
 cat api/src/main/resources/application_template.yml | \
   sed -e 's/{{ PORTAL_APPLICATION_NAME }}/'${PORTAL_APPLICATION_NAME}'\/app/' > api/src/main/resources/application.yml
 
-# create docker-compose.yml
+echo "* create docker-compose.yml"
 cat docker-compose-template.yml | \
   sed -e 's/{{ PORTAL_APPLICATION_NAME }}/'${PORTAL_APPLICATION_NAME}'/g' > docker-compose.yml
 
-# create a config file for portal simulation in docker-compose-dev.yml
+echo "* create a config file for portal simulation in docker-compose-dev.yml (portal/default.conf)"
 cat > $(pwd)/portal/default.conf <<__EOF
 server {
     listen       80;
@@ -55,7 +69,7 @@ server {
 }
 __EOF
 
-# create header include file for the portal simulations
+echo "* create header include file for the portal simulations (portal/headers.conf)"
 cat > $(pwd)/portal/headers.conf <<__EOF
 proxy_set_header X-PORTAL-APPLICATION	    "${PORTAL_APPLICATION_NAME}";
 proxy_set_header X-PORTAL-AUTH	          "Standardportal";
