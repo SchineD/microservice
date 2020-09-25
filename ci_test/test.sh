@@ -26,9 +26,9 @@ for URL in \
 done
 
 echo -n "### ${BASE}/zone : "
-ZONE=$(curl -s ${BASE}/zone)
-if [[ "${ZONE}" != "UNDEFINED" ]] ; then
-  echo "Reported zone should be UNDEFINED but is ${ZONE}"
+ZONE=$(curl -H "X-PORTAL-ZONE-STATUS: CI_SERVER" -s ${BASE}/zone)
+if [[ "${ZONE}" != "CI_SERVER" ]] ; then
+  echo "Reported zone should be CI_SERVER but is ${ZONE}"
   EXIT_CODE=$(expr ${EXIT_CODE} + 1)
 else
   echo "${ZONE}"
