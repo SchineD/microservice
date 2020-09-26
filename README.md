@@ -134,8 +134,9 @@ Without the generated files, the application can't be built. So this is a prereq
 
 `./portal/bin/init_portal_application.sh` is also started on the CI server. Therefore:
 
-Never edit one of the generated files (apart from `package.json`). The changes would not be visible
-in production! Always edit the **original file** instead.
+Never edit one of the generated files (with the exception of
+`package.json`). The changes would not be visible in production!
+Always edit the **original file** instead.
 
 ## Before you modify the application 
 
@@ -159,7 +160,7 @@ not strictly adhere to the formal definition of REST.
 
 As to the project structure, unsurprisingly the frontend
 is in `./app` and the backend is in `./api`.
-Further below we'll look deeper into project
+Farther below we'll look deeper into project
 structure and how and where to change what.
 
 The backend has a sample collections of cats, not
@@ -257,7 +258,7 @@ Docs](https://swagger.io/specification/).
 ## What does this all look like?
 
 In a web browser navigate to [the
-frontend](http://localhost:8096/my-new-app/app). You
+frontend](http://localhost:8096/my-new-app/app/). You
 should see the generic Angular starter app. It does not access the backend yet.
 
 ![The frontend](doc/img/app-01-app.png)
@@ -471,7 +472,7 @@ Let's consider variants though:
 * You could run the same `dev-portal` with a modified config and two
   server configurations on different ports
 
-* you could go fancy, load an extension language like Lua or javascript 
+* you could go fancy, load an extension language like Lua or Javascript 
   into `dev-portal`, and there you could switch "identities" based on some
   incoming header value.
 

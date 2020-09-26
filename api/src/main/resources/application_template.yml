@@ -6,8 +6,8 @@ logging.level:
 spring:
     datasource:
         initialization-mode: always
-        #url: jdbc:postgresql://localhost:5432/springboot_react_starter
-        #username: springboot_react_starter_admin
+        #url: jdbc:postgresql://localhost:5432/springboot_angular_starter
+        #username: springboot_angular_starter_admin
         #password: changeme
     jpa:
         hibernate:
