@@ -126,6 +126,46 @@
           }
         }
       }
+    },
+    "api-swagger-client": {
+      "projectType": "library",
+      "root": "projects/api-swagger-client",
+      "sourceRoot": "projects/api-swagger-client/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/api-swagger-client/tsconfig.lib.json",
+            "project": "projects/api-swagger-client/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/api-swagger-client/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/api-swagger-client/src/test.ts",
+            "tsConfig": "projects/api-swagger-client/tsconfig.spec.json",
+            "karmaConfig": "projects/api-swagger-client/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/api-swagger-client/tsconfig.lib.json",
+              "projects/api-swagger-client/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "app"
 }
