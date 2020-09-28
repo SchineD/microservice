@@ -1,0 +1,18 @@
+<div class="who-am-i">
+  <h1>That's all we can say about you</h1>
+
+  <table>
+    <thead>
+    <tr>
+      <td>Header name</td>
+      <td>Header value</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let h of whoIAm">
+      <td>{{ h.name }}</td>
+      <td>{{ h.value }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

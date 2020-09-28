@@ -1,0 +1,10 @@
+<div class="item-list">
+  <h1>Best Cats in the World</h1>
+  <p></p>
+  <div class="item-container">
+    <div *ngFor="let cat of cats" class="item">
+      <img src="./assets/img/{{ cat.imageName }}" alt="{{ cat.name }}"/>
+      <p class="caption">{{ cat.description }}</p>
+    </div>
+  </div>
+</div>

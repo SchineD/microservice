@@ -4,33 +4,30 @@
 
 [Use swagger to generate API client as an Angular library](https://medium.com/sohoffice/the-api-first-strategy-use-swagger-to-generate-api-client-as-an-angular-library-66964ea43587)
 
-## Prerequisites
+## Initial steps (only once)
 
-* create an Angular library as subproject
+First create an Angular library as subproject and delete the source directory. This is, where we will 
+generate the library with `swagger-codegen`.
 
 ```
 cd springboot-angular-starter/app
 rm -rf projects/api-swagger-client/src
 ```
 
-```
-# from [BUG]missing swagger input or config
-#      https://github.com/swagger-api/swagger-codegen/issues/6442
-# 
-cd ../../..
-
-git clone https://github.com/swagger-api/swagger-codegen.git
-cd swagger-codegen
-git checkout 3.0.0
-# after this build as you please
-mvn clean package
-
-java -jar ./modules/swagger-codegen-cli/target/swagger-codegen-cli.jar \
-  generate -i http://localhost:8080/v3/api-docs -l typescript-angular \
-  -o ../springboot-angular-starter/app/projects/api-swagger-client/src
-```
+Start the backend in your IDE. It must run on http://localhost:8080/
+Go to the main directory and create the bindings
 
 ```
-cd ../springboot-angular-starter/app
+cd ../../
+./build/generate_openapi_client.sh
+```
+
+At the end, the library is built to `dist`. Changes in the library sources
+would need a new build to become effective.
+
+```
+cd app
 ng build api-swagger-client
 ```
+
+See `app/src/app/whoami/whoami.component.ts` for usage.
