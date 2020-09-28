@@ -8,7 +8,7 @@ COPY . /work
 
 WORKDIR /work
 
-RUN rm -rf node_modules && npm install && ng build
+RUN rm -rf node_modules && npm install && ng build api-swagger-client && ng build
 WORKDIR /work/dist/app
 RUN zip -r ../../build.zip .
 
