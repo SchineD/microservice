@@ -27,8 +27,8 @@ done
 
 echo -n "### ${BASE}/zone : "
 ZONE=$(curl -H "X-PORTAL-ZONE-STATUS: CI_SERVER" -s ${BASE}/zone)
-if [[ "${ZONE}" != "CI_SERVER" ]] ; then
-  echo "Reported zone should be CI_SERVER but is ${ZONE}"
+if [[ "${ZONE}" != '{"value":"CI_SERVER"}' ]] ; then
+  echo "Reported zone should be '{\"value\":\"CI_SERVER\"}' but is ${ZONE}"
   EXIT_CODE=$(expr ${EXIT_CODE} + 1)
 else
   echo "${ZONE}"
