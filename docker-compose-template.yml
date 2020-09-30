@@ -31,6 +31,8 @@ services:
     expose:
       - 8080
     restart: unless-stopped
+    volumes:
+      - "./CURRENT_CONFIG_VERSION:/config/CURRENT_CONFIG_VERSION" # in PROD this will contain a semver tag
     networks:
       default:
         aliases:

@@ -6,6 +6,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.java.Log;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +38,14 @@ public class RESTController {
     @Operation(summary = "Version", description = "Tag or branch", tags = { "meta" })
     @GetMapping(value = "/version")
     public String getVersion() {
-        return "master";
+        File f = new File("/config/CURRENT_CONFIG_VERSION");
+        String version = "undefined";
+        if(f.isFile() && !f.isDirectory() && f.canRead()) {
+            try {
+                version = new String(Files.readAllBytes(Paths.get("/config/CURRENT_CONFIG_VERSION")));
+            } catch (java.io.IOException e) {}
+        }
+        return version;
     }
 
     @Operation(summary = "Portal headers", description = "list of portal headers received", tags = { "meta" })
