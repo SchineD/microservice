@@ -18,6 +18,7 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 import { Cat } from '../model/cat';
+import { StringResponse } from '../model/stringResponse';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -186,9 +187,9 @@ export class CatsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getVersion(observe?: 'body', reportProgress?: boolean): Observable<string>;
-    public getVersion(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<string>>;
-    public getVersion(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<string>>;
+    public getVersion(observe?: 'body', reportProgress?: boolean): Observable<StringResponse>;
+    public getVersion(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<StringResponse>>;
+    public getVersion(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<StringResponse>>;
     public getVersion(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
@@ -206,7 +207,7 @@ export class CatsService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<string>('get',`${this.basePath}/version`,
+        return this.httpClient.request<StringResponse>('get',`${this.basePath}/version`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -222,9 +223,9 @@ export class CatsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getZone(observe?: 'body', reportProgress?: boolean): Observable<string>;
-    public getZone(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<string>>;
-    public getZone(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<string>>;
+    public getZone(observe?: 'body', reportProgress?: boolean): Observable<StringResponse>;
+    public getZone(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<StringResponse>>;
+    public getZone(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<StringResponse>>;
     public getZone(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
@@ -242,7 +243,7 @@ export class CatsService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<string>('get',`${this.basePath}/zone`,
+        return this.httpClient.request<StringResponse>('get',`${this.basePath}/zone`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

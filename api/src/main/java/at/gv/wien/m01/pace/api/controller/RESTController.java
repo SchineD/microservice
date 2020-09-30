@@ -3,21 +3,36 @@ package at.gv.wien.m01.pace.api.controller;
 import at.gv.wien.m01.pace.api.model.cats.Cat;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Data;
 import lombok.extern.java.Log;
+import lombok.val;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.regex.Pattern;
+
+
 
 @RestController
 @Log
 @Tag(name = "cats+", description = "Cats and more")
 public class RESTController {
+
+    @Data
+    public class StringResponse {
+        public String value;
+
+        public StringResponse(String s) {
+            this.value = s;
+        }
+    }
+
     private List<Cat> entityList = new ArrayList<>();
 
     {
@@ -28,24 +43,31 @@ public class RESTController {
 
     @Operation(summary = "Zone", description = "DEV, CI_TEST, TEST or PROD, UNDEFINED otherwise", tags = { "meta" })
     @GetMapping(value = "/zone")
-    public String getZone(@RequestHeader Map<String, String> headers) {
+    public StringResponse getZone(@RequestHeader Map<String, String> headers) {
         if (headers.containsKey("x-portal-zone-status")) {
-            return headers.get("x-portal-zone-status");
+            return new StringResponse(headers.get("x-portal-zone-status"));
         }
-        return "UNDEFINED";
+        return new StringResponse("UNDEFINED");
     }
 
     @Operation(summary = "Version", description = "Tag or branch", tags = { "meta" })
     @GetMapping(value = "/version")
-    public String getVersion() {
-        File f = new File("/config/CURRENT_CONFIG_VERSION");
-        String version = "undefined";
+    public StringResponse getVersion() {
+        val f = new File("/config/CURRENT_CONFIG_VERSION");
+        String version = "UNDEFINED";
         if(f.isFile() && !f.isDirectory() && f.canRead()) {
             try {
                 version = new String(Files.readAllBytes(Paths.get("/config/CURRENT_CONFIG_VERSION")));
+                val pattern = Pattern.compile("^\\d+\\.\\d+\\.\\d+$");
+                val matcher = pattern.matcher("foo");
+                if (!matcher.find()) {
+                    val t_gmt = f.lastModified();
+                    val timeStamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(t_gmt), ZoneId.of("Europe/Vienna"));
+                    version = String.format("%s (%s)", version, timeStamp);
+                }
             } catch (java.io.IOException e) {}
         }
-        return version;
+        return new StringResponse(version);
     }
 
     @Operation(summary = "Portal headers", description = "list of portal headers received", tags = { "meta" })
