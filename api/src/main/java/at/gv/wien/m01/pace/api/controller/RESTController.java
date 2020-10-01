@@ -1,11 +1,13 @@
 package at.gv.wien.m01.pace.api.controller;
 
+import at.gv.wien.m01.pace.api.config.AppInfoConfig;
 import at.gv.wien.m01.pace.api.model.cats.Cat;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import lombok.extern.java.Log;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -23,6 +25,9 @@ import java.util.regex.Pattern;
 @Log
 @Tag(name = "cats+", description = "Cats and more")
 public class RESTController {
+
+    @Autowired
+    private AppInfoConfig appInfoConfig;
 
     @Data
     public class StringResponse {
@@ -53,21 +58,7 @@ public class RESTController {
     @Operation(summary = "Version", description = "Tag or branch", tags = { "meta" })
     @GetMapping(value = "/version")
     public StringResponse getVersion() {
-        val f = new File("/config/CURRENT_CONFIG_VERSION");
-        String version = "UNDEFINED";
-        if(f.isFile() && !f.isDirectory() && f.canRead()) {
-            try {
-                version = new String(Files.readAllBytes(Paths.get("/config/CURRENT_CONFIG_VERSION")));
-                val pattern = Pattern.compile("^\\d+\\.\\d+\\.\\d+$");
-                val matcher = pattern.matcher("foo");
-                if (!matcher.find()) {
-                    val t_gmt = f.lastModified();
-                    val timeStamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(t_gmt), ZoneId.of("Europe/Vienna"));
-                    version = String.format("%s (%s)", version, timeStamp);
-                }
-            } catch (java.io.IOException e) {}
-        }
-        return new StringResponse(version);
+        return new StringResponse(appInfoConfig.getAppVersion());
     }
 
     @Operation(summary = "Portal headers", description = "list of portal headers received", tags = { "meta" })
