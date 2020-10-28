@@ -1,4 +1,4 @@
-package at.gv.wien.m01.pace.api;
+package com.schinewitz.daniel;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

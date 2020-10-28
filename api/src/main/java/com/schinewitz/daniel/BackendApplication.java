@@ -1,4 +1,4 @@
-package at.gv.wien.m01.pace.api;
+package com.schinewitz.daniel;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

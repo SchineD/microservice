@@ -1,4 +1,4 @@
-package at.gv.wien.m01.pace.api.config;
+package com.schinewitz.daniel.config;
 
 import lombok.val;
 import org.springframework.context.annotation.Bean;

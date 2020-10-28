@@ -1,20 +1,29 @@
-package com.schinewitz.daniel.model.cats;
+package com.schinewitz.daniel.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.util.UUID;
 
 @Data
-public class Cat {
-    private UUID id;
-    private String name;
-    private String description;
-    private String imageName;
+@NoArgsConstructor
+@Entity
+@Table(name = "Post")
+public class Post {
 
-    public Cat(String name, String description, String imageName) {
-        this.id = UUID.randomUUID();
-        this.name = name;
-        this.description = description;
-        this.imageName = imageName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "header")
+    private String header;
+
+    @Column(name = "content")
+    private String content;
+
+    public Post(String header, String content) {
+        this.header = header;
+        this.content = content;
     }
 }

@@ -5,8 +5,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 
-	<groupId>at.gv.wien.m01.pace</groupId>
-	<artifactId>springboot-angular-starter.base</artifactId>
+	<groupId>com.schinewitz.daniel</groupId>
+	<artifactId>springboot-angular-microservice.base</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
