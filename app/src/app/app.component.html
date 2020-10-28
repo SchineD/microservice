@@ -1,10 +1,8 @@
-<nav>
-  <ul>
-    <li><a routerLink="/home">Home</a></li>
-    <li><a routerLink="/about">About</a></li>
-    <li><a routerLink="/list">List</a></li>
-    <li><a routerLink="/whoami">Who am I?</a></li>
-    <li><a target="_blank" href="{{ getApiLink() }}">API docs</a></li>
-  </ul>
-</nav>
-<router-outlet></router-outlet>
+<div class="main_header">
+  <span class="header">
+  <h1>SWE-Project: Postmaster</h1>
+    </span>
+  <display-post #displayPostComponent></display-post>
+  <create-post (postEvent)="displayPostComponent.reloadData()"></create-post>
+</div>
+
