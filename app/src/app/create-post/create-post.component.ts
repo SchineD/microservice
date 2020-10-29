@@ -20,8 +20,9 @@ export class CreatePostComponent implements OnInit {
   }
 
   sendPost(post: Post) {
-    this.postServiceService.createPost(post).subscribe(data => console.log(data));
-
-    setTimeout(this.postEvent.emit(null), 500);  // admittedly, i was lazy
+    this.postServiceService.createPost(post).subscribe(data => {
+      console.log(data);
+      this.postEvent.emit(null);
+    });
   }
 }
