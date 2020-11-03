@@ -29,13 +29,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### Generated files ###
-/portal/default-dev-server.conf
-/portal/default.conf
-/portal/headers.conf
-/app/src/index.html
-/api/src/main/resources/application.yml
-!/build/
-!/portal/.gitkeep
-/docker-compose.yml
