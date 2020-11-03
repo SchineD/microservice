@@ -24,7 +24,7 @@ Url: [localhost:80](http://localhost:80)
 
 8. /
 
-9. /
+9. Disposability: microservice can easily and quickly start and stop once the images are downloaded (docker-compose up / docker-compose down (--rmi=all))
 
 10. Dev-Prod Parity: through usage of docker(-compose) to keep a uniform runtime environment regardless of actual host system
 
